@@ -4,7 +4,8 @@ namespace Game
 {
     public class SpaceResData
     {
-        public SpaceRes Type;
+        public string ResId;
+        public SpaceResType Type;
         public Vector3 Position;
         public float Amount;
         public SpaceResState State;

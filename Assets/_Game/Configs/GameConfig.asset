@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   _spaceResSpawner: {fileID: 11400000, guid: 3712bf0e3eb3ef64c9ec9abc87ded008, type: 2}
+  _stationConfig: {fileID: 11400000, guid: d6382d26fdede14489f925c337a55324, type: 2}

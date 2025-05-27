@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cf19642be4d4da41a08e6bc236a4546, type: 3}
-  m_Name: SpaceResConfig_Gas
+  m_Script: {fileID: 11500000, guid: bc309030b6c7fff44a224d8b4ab7937d, type: 3}
+  m_Name: DroneConfig_Basic
   m_EditorClassIdentifier: 
-  _resource: 1
-  _amount: 100
-  _prefab: {fileID: 5218810242424478840, guid: 92d7054b2bb30ee43865a06ec8402eda, type: 3}
+  _droneType: 0
+  _moveSpeedBase: 1
+  _gatherSpeedBase: 2
+  _prefab: {fileID: 581690577761382907, guid: f8ba6c5fed4935345a6cd45a91de1c97, type: 3}

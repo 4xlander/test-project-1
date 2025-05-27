@@ -2,40 +2,38 @@ namespace Game
 {
     public class SpaceResController
     {
-        private readonly SpaceResModelService _modelService;
+        private readonly string _resId;
+        private readonly SpaceResModel _model;
+        private readonly SpaceResView _view;
 
-        private SpaceResModel _model;
-        private SpaceResView _view;
-
-        public SpaceResController(SpaceResModelService modelService)
+        public SpaceResController(
+            string resId, SpaceResModel model, SpaceResView view)
         {
-            _modelService = modelService;
-        }
+            _resId = resId;
+            _model = model;
+            _view = view;
 
-        public void Init(SpaceResConfig resourceConfig, SpaceResView resourceView)
-        {
-            _view = resourceView;
-
-            _model = _modelService.CreateModel(resourceConfig);
-            _model.SetPosition(_view.transform.position);
             _model.OnAmountChanged += Model_OnAmountChanged;
-
-            _view.AmountText.text = _model.Amount.ToString();
         }
 
-        private void Model_OnAmountChanged()
+        public void Init(SpaceResConfig config)
         {
-            _view.AmountText.text = _model.Amount.ToString();
+            _view.UpdateAmount(_model.GetAmount(_resId));
+        }
 
-            if (_model.Amount <= 0)
+        private void Model_OnAmountChanged(string resId)
+        {
+            if (_resId != resId)
+                return;
+
+            var amount = _model.GetAmount(_resId);
+            _view.UpdateAmount(amount);
+
+            if (amount <= 0)
             {
                 _model.OnAmountChanged -= Model_OnAmountChanged;
-
-                _modelService.RemoveModel(_model);
-                _model = null;
-
+                _model.RemoveRes(_resId);
                 _view.Destroy();
-                _view = null;
             }
         }
     }

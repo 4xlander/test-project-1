@@ -2,35 +2,33 @@ using UnityEngine;
 
 namespace Game
 {
-    public class SpaceResSpawner : MonoBehaviour, ITickable
+    public class SpaceResSpawner : ITickable
     {
         private SpaceResSpawnerConfig _config;
-        private SpaceResModelService _modelService;
+        private SpaceResModel _spaceResModel;
         private TickManager _tickManager;
 
+        private Transform _spawnPoint;
         private float _spawnTimer = 0;
 
-        private void Start()
+        public SpaceResSpawner(
+            SpaceResSpawnerConfig config, SpaceResModel spaceResModel, TickManager tickManager)
         {
+            _config = config;
+            _spaceResModel = spaceResModel;
+
+            _tickManager = tickManager;
             _tickManager.Register(this);
         }
 
-        private void OnDestroy()
+        public void Init(Transform spawnPoint)
         {
-            _tickManager.Unregister(this);
-        }
-
-        public void Init(
-            SpaceResSpawnerConfig config, SpaceResModelService modelService, TickManager tickManager)
-        {
-            _config = config;
-            _modelService = modelService;
-            _tickManager = tickManager;
+            _spawnPoint = spawnPoint;
         }
 
         public void Tick()
         {
-            if (_modelService.Models.Count >= _config.MaxCount || _config.SpaceResources.Count < 1)
+            if (_spaceResModel.Resources.Count >= _config.MaxCount || _config.SpaceResources.Count < 1)
                 return;
 
             _spawnTimer -= Time.deltaTime;
@@ -47,11 +45,11 @@ namespace Game
             var resourceConfig = GetRandomConfig();
             var randomPosition = GetRandomPosition();
 
-            var resourceView = Instantiate(resourceConfig.Prefab, transform);
+            var resourceView = Object.Instantiate(resourceConfig.Prefab, _spawnPoint);
             resourceView.transform.position = randomPosition;
 
-            var resourceController = new SpaceResController(_modelService);
-            resourceController.Init(resourceConfig, resourceView);
+            var resId = _spaceResModel.CreateRes(randomPosition, resourceConfig);
+            new SpaceResController(resId, _spaceResModel, resourceView).Init(resourceConfig);
         }
 
         private SpaceResConfig GetRandomConfig()

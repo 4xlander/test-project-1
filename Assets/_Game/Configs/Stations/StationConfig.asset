@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cf19642be4d4da41a08e6bc236a4546, type: 3}
-  m_Name: SpaceResConfig_Gas
+  m_Script: {fileID: 11500000, guid: 5a1f786311cbd3745adc0acb6e6cbd36, type: 3}
+  m_Name: StationConfig
   m_EditorClassIdentifier: 
-  _resource: 1
-  _amount: 100
-  _prefab: {fileID: 5218810242424478840, guid: 92d7054b2bb30ee43865a06ec8402eda, type: 3}
+  _drones:
+  - {fileID: 11400000, guid: fe2547dabaa0cc448a2fa5c6be015d0e, type: 2}

@@ -1,74 +1,86 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
 {
     public class SpaceResModel
     {
-        public event Action OnStateChanged;
-        public event Action OnAmountChanged;
+        public event Action<string> OnStateChanged;
+        public event Action<string> OnAmountChanged;
+        public event Action<string> OnResRemoved;
 
-        private readonly SpaceResData _data;
+        private readonly Dictionary<string, SpaceResData> _dataMap;
 
-        public SpaceResModel(SpaceResData data)
+        public SpaceResModel()
         {
-            _data = data;
+            _dataMap = new Dictionary<string, SpaceResData>();
         }
 
-        public SpaceRes Type => _data.Type;
+        public bool Contains(string resId) =>
+            _dataMap.ContainsKey(resId);
 
-        public SpaceResState State
+        public IReadOnlyCollection<string> Resources =>
+            _dataMap.Keys;
+
+        public string CreateRes(Vector3 position, SpaceResConfig config)
         {
-            get => _data.State;
-            private set
+            var id = Guid.NewGuid().ToString();
+            var data = new SpaceResData
             {
-                if (_data.State == value)
-                    return;
-                _data.State = value;
+                ResId = id,
+                Type = config.Type,
+                Amount = config.Amount,
+                Position = position,
+            };
 
-                OnStateChanged?.Invoke();
-            }
+            _dataMap[id] = data;
+            return id;
         }
 
-        public Vector3 Position
+        public void RemoveRes(string resId)
         {
-            get => _data.Position;
-            private set
-            {
-                if (_data.Position == value)
-                    return;
-                _data.Position = value;
-            }
+            if (!_dataMap.ContainsKey(resId))
+                return;
+
+            _dataMap.Remove(resId);
+            OnResRemoved?.Invoke(resId);
         }
 
-        public float Amount
+        public bool IsFree(string resId)
         {
-            get => _data.Amount;
-            private set
-            {
-                if (_data.Amount == value)
-                    return;
-                _data.Amount = value;
-
-                OnAmountChanged?.Invoke();
-            }
+            return _dataMap[resId].State == SpaceResState.Idle;
         }
 
-        public float Gather(float value)
+        public void SetTarget(string resId)
         {
-            value = Mathf.Clamp(value, 0, Amount);
-            Amount -= value;
+            if (_dataMap.TryGetValue(resId, out var data))
+                data.State = SpaceResState.Target;
+        }
+
+        public float GetAmount(string resId)
+        {
+            if (_dataMap.ContainsKey(resId))
+                return _dataMap[resId].Amount;
+            else
+                return 0f;
+        }
+
+        public float Gather(string resId, float value)
+        {
+            if (!_dataMap.TryGetValue(resId, out var data))
+                return 0f;
+
+            value = Mathf.Clamp(value, 0, data.Amount);
+            data.Amount -= value;
+
+            OnAmountChanged?.Invoke(resId);
             return value;
         }
 
-        public void SetPosition(Vector3 position)
+        public Vector3 GetPosition(string resId)
         {
-            Position = position;
-        }
-
-        public void SetState(SpaceResState newState)
-        {
-            State = newState;
+            return _dataMap[resId].Position;
         }
     }
 }

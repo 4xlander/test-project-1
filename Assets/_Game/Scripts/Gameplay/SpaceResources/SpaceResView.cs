@@ -6,5 +6,10 @@ namespace Game
     public class SpaceResView : MonoBehaviour
     {
         public TextMeshPro AmountText;
+
+        public void UpdateAmount(float amount)
+        {
+            AmountText.text = amount.ToString();
+        }
     }
 }
