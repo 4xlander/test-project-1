@@ -82,5 +82,16 @@ namespace Game
         {
             return _dataMap[droneId].StationId;
         }
+
+        public IReadOnlyList<CargoData> GetCargo(string droneId)
+        {
+            return _dataMap[droneId].Cargo;
+        }
+
+        public void ClearCargo(string droneId)
+        {
+            if (_dataMap.TryGetValue(droneId, out var data))
+                data.Cargo.Clear();
+        }
     }
 }

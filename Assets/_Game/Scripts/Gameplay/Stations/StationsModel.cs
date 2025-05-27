@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game
 {
     public class StationsModel
     {
+        public event Action<string> OnResAmountChanged;
+
         private readonly Dictionary<string, StationData> _dataMap;
 
         public StationsModel()
@@ -68,6 +71,35 @@ namespace Game
         public Vector3 GetPosition(string stationId)
         {
             return _dataMap[stationId].Position;
+        }
+
+        public void TransferCargo(string stationId, CargoData item)
+        {
+            if (!_dataMap.ContainsKey(stationId))
+                return;
+
+            var resources = _dataMap[stationId].Resources;
+            var res = resources.FirstOrDefault(r => r.ResType == item.ResType);
+            if (res != null)
+                res.Amount += item.Amount;
+            else
+                resources.Add(new CargoData
+                {
+                    ResType = item.ResType,
+                    Amount = item.Amount,
+                });
+
+            OnResAmountChanged?.Invoke(stationId);
+        }
+
+        public float GetResTotalAmount(string stationId)
+        {
+            var result = 0f;
+            if (_dataMap.ContainsKey(stationId))
+                foreach (var item in _dataMap[stationId].Resources)
+                    result += item.Amount;
+
+            return result;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Game
@@ -6,6 +7,7 @@ namespace Game
     {
         private const float GATHER_TIME = 1f;
         private const float WAIT_TIME = 2f;
+        private const float TRANSFER_CARGO_TIME = 1f;
 
         private readonly string _droneId;
         private readonly DroneView _view;
@@ -15,8 +17,7 @@ namespace Game
         private readonly StationsModel _stationsModel;
         private readonly TickManager _tickManager;
 
-        private float _gatherTimer = 0;
-        private float _waitTimer = 0;
+        private float _timer = 0;
         private string _targetResId = string.Empty;
 
         public DroneController(
@@ -47,7 +48,6 @@ namespace Game
             switch (state)
             {
                 case DroneState.Idle:
-                    _waitTimer = WAIT_TIME;
                     FindNearestFreeRes();
 
                     if (!string.IsNullOrEmpty(_targetResId))
@@ -55,37 +55,53 @@ namespace Game
                     break;
 
                 case DroneState.Gather:
-                    _gatherTimer -= Time.deltaTime;
-                    if (_gatherTimer <= 0)
+                    _timer -= Time.deltaTime;
+                    if (_timer <= 0)
                     {
-                        _gatherTimer = GATHER_TIME;
+                        _timer = GATHER_TIME;
                         GatherResource();
                     }
                     break;
 
                 case DroneState.Wait:
-                    _waitTimer -= Time.deltaTime;
-                    if (_waitTimer <= 0)
+                    _timer -= Time.deltaTime;
+                    if (_timer <= 0)
                     {
-                        _waitTimer = WAIT_TIME;
+                        _timer = WAIT_TIME;
                         MoveBackToStation();
                     }
                     break;
 
                 case DroneState.CargoTransfer:
-                    // TODO implement transfer
+                    _timer -= Time.deltaTime;
+                    if (_timer <= 0)
+                        TransferCargoToStation();
                     break;
             }
+        }
+
+        private void TransferCargoToStation()
+        {
+            var cargo = _model.GetCargo(_droneId);
+            var stationId = _model.GetStationId(_droneId);
+            foreach (var item in cargo)
+                _stationsModel.TransferCargo(stationId, item);
+
+            _model.ClearCargo(_droneId);
+            _model.ChangeState(_droneId, DroneState.Idle);
         }
 
         private void MoveBackToStation()
         {
             _spaceResModel.RemoveRes(_targetResId);
+            _targetResId = string.Empty;
+            _model.SetTargetResource(_droneId, _targetResId);
 
             var stationId = _model.GetStationId(_droneId);
             var stationPos = _stationsModel.GetPosition(stationId);
             _view.MoveTo(stationPos, () => _model.ChangeState(_droneId, DroneState.CargoTransfer));
 
+            _timer = TRANSFER_CARGO_TIME;
             _model.ChangeState(_droneId, DroneState.Move);
         }
 
@@ -95,18 +111,21 @@ namespace Game
             if (gatheredValue > 0)
                 _model.AddCargo(_droneId, _spaceResModel.GetResType(_targetResId), gatheredValue);
             else
+            {
+                _timer = WAIT_TIME;
                 _model.ChangeState(_droneId, DroneState.Wait);
+            }
         }
 
         private void MoveToTargetRes()
         {
             _spaceResModel.SetTarget(_targetResId);
-
             _model.SetTargetResource(_droneId, _targetResId);
-            _model.ChangeState(_droneId, DroneState.Move);
 
             var targetPos = _spaceResModel.GetPosition(_targetResId);
             _view.MoveTo(targetPos, () => _model.ChangeState(_droneId, DroneState.Gather));
+
+            _model.ChangeState(_droneId, DroneState.Move);
         }
 
         private void FindNearestFreeRes()
