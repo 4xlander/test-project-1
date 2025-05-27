@@ -2,7 +2,7 @@ namespace Game
 {
     public class CargoData
     {
-        public SpaceResType Resource;
+        public SpaceResType ResType;
         public float Amount;
     }
 }

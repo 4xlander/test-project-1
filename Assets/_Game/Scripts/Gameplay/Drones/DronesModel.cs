@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Game
 {
@@ -7,11 +8,11 @@ namespace Game
     {
         public event Action<string> OnDroneRemoved;
 
-        private readonly Dictionary<string, DroneData> _dronesDataMap;
+        private readonly Dictionary<string, DroneData> _dataMap;
 
         public DronesModel()
         {
-            _dronesDataMap = new Dictionary<string, DroneData>();
+            _dataMap = new Dictionary<string, DroneData>();
         }
 
         public string AddDrone(string stationId)
@@ -23,26 +24,63 @@ namespace Game
                 StationId = stationId,
             };
 
-            _dronesDataMap.Add(droneId, data);
+            _dataMap.Add(droneId, data);
 
             return droneId;
         }
 
         public void RemoveDrone(string droneId)
         {
-            if (!_dronesDataMap.ContainsKey(droneId))
+            if (!_dataMap.ContainsKey(droneId))
                 return;
 
-            _dronesDataMap.Remove(droneId);
+            _dataMap.Remove(droneId);
             OnDroneRemoved?.Invoke(droneId);
         }
 
-        public string GetDroneTarget(string droneId)
+        public DroneState GetState(string droneId)
         {
-            if (_dronesDataMap.TryGetValue(droneId, out var data))
-                return data.TargetId;
+            if (_dataMap.TryGetValue(droneId, out var data))
+                return data.State;
             else
-                return string.Empty;
+                return DroneState.Idle;
+        }
+
+        public void ChangeState(string droneId, DroneState droneState)
+        {
+            if (!_dataMap.TryGetValue(droneId, out var data))
+                return;
+
+            data.State = droneState;
+        }
+
+        public void SetTargetResource(string droneId, string resId)
+        {
+            if (!_dataMap.TryGetValue(droneId, out var data))
+                return;
+
+            data.TargetId = resId;
+        }
+
+        public void AddCargo(string _dronId, SpaceResType resType, float amount)
+        {
+            if (!_dataMap.TryGetValue(_dronId, out var data))
+                return;
+
+            var stored = data.Cargo.FirstOrDefault(c => c.ResType == resType);
+            if (stored != null)
+                stored.Amount += amount;
+            else
+                data.Cargo.Add(new CargoData
+                {
+                    ResType = resType,
+                    Amount = amount,
+                });
+        }
+
+        public string GetStationId(string droneId)
+        {
+            return _dataMap[droneId].StationId;
         }
     }
 }

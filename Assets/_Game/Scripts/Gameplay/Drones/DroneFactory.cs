@@ -9,15 +9,17 @@ namespace Game
         private readonly Dictionary<DroneType, DroneConfig> _droneConfigsMap;
         private readonly DronesModel _dronesModel;
         private readonly SpaceResModel _spaceResModel;
+        private readonly StationsModel _stationsModel;
         private readonly TickManager _tickManager;
 
         public DroneFactory(
             IEnumerable<DroneConfig> droneConfigs, DronesModel dronesModel,
-            SpaceResModel spaceResModel, TickManager tickManager)
+            SpaceResModel spaceResModel, StationsModel stationsModel, TickManager tickManager)
         {
             _droneConfigsMap = droneConfigs.ToDictionary(c => c.DroneType, c => c);
             _dronesModel = dronesModel;
             _spaceResModel = spaceResModel;
+            _stationsModel = stationsModel;
             _tickManager = tickManager;
         }
 
@@ -36,7 +38,7 @@ namespace Game
             var droneView = Object.Instantiate(config.Prefab, parent);
             var droneId = _dronesModel.AddDrone(stationId);
             new DroneController(
-                droneId, droneView, _dronesModel, config, _spaceResModel, _tickManager);
+                droneId, droneView, _dronesModel, config, _spaceResModel, _stationsModel, _tickManager);
 
             return droneId;
         }

@@ -21,13 +21,14 @@ namespace Game
 
             var dronesModel = new DronesModel();
 
-            var droneFactory = new DroneFactory(
-                _gameConfig.StationConfig.Drones, dronesModel, spaceResModel, _tickManager);
-
             var stationsModel = new StationsModel();
+
+            var droneFactory = new DroneFactory(
+                _gameConfig.StationConfig.Drones, dronesModel, spaceResModel, stationsModel, _tickManager);
+
             foreach (var view in _stationViews)
             {
-                var stationId = stationsModel.AddStation();
+                var stationId = stationsModel.AddStation(view.transform.position);
                 var controller = new StationController(
                     stationId, stationsModel, view, dronesModel, droneFactory, _tickManager);
             }

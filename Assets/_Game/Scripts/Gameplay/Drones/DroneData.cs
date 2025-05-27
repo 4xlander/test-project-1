@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
@@ -10,6 +11,6 @@ namespace Game
 
         public Vector3 Position;
         public DroneState State;
-        public CargoData Cargo;
+        public List<CargoData> Cargo = new();
     }
 }

@@ -58,6 +58,11 @@ namespace Game
                 data.State = SpaceResState.Target;
         }
 
+        public SpaceResType GetResType(string resId)
+        {
+            return _dataMap[resId].Type;
+        }
+
         public float GetAmount(string resId)
         {
             if (_dataMap.ContainsKey(resId))
