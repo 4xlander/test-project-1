@@ -5,6 +5,7 @@ namespace Game
     public class GameplayEntryPoint : MonoBehaviour
     {
         [SerializeField] private GameConfig _gameConfig;
+        [SerializeField] private UIService _uiService;
         [Space]
         [SerializeField] private Transform _spaceResSpawnPoint;
         [SerializeField] private StationView[] _stationViews;
@@ -16,8 +17,10 @@ namespace Game
             _tickManager = new TickManager();
 
             var spaceResModel = new SpaceResModel();
+
+            var spaceResSpawnModel = new SpaceResSpawnerModel();
             new SpaceResSpawner(
-                _gameConfig.SpaceResSpawner, spaceResModel, _tickManager).Init(_spaceResSpawnPoint);
+                spaceResSpawnModel, _gameConfig.SpaceResSpawner, spaceResModel, _tickManager).Init(_spaceResSpawnPoint);
 
             var dronesModel = new DronesModel();
 
@@ -32,6 +35,9 @@ namespace Game
                 var controller = new StationController(
                     stationId, stationsModel, view, dronesModel, droneFactory, _tickManager);
             }
+
+            new GameplayUIController(
+                _uiService.GameplayUIView, stationsModel, dronesModel, spaceResSpawnModel).Init();
         }
 
         private void Update()

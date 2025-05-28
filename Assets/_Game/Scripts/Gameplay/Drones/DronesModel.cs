@@ -7,13 +7,19 @@ namespace Game
     public class DronesModel
     {
         public event Action<string> OnDroneRemoved;
+        public event Action<string> OnSpeedChanged;
+        public event Action OnPathVisibilityChanged;
 
         private readonly Dictionary<string, DroneData> _dataMap;
+        private bool _pathVisibility = false;
 
         public DronesModel()
         {
             _dataMap = new Dictionary<string, DroneData>();
         }
+
+        public IReadOnlyCollection<string> Drones =>
+            _dataMap.Keys;
 
         public string AddDrone(string stationId)
         {
@@ -92,6 +98,28 @@ namespace Game
         {
             if (_dataMap.TryGetValue(droneId, out var data))
                 data.Cargo.Clear();
+        }
+
+        public float GetSpeed(string droneId)
+        {
+            return _dataMap[droneId].Speed;
+        }
+
+        public void SetSpeed(string droneId, float value)
+        {
+            if (!_dataMap.TryGetValue(droneId, out var data))
+                return;
+
+            data.Speed = value;
+            OnSpeedChanged?.Invoke(droneId);
+        }
+
+        public bool GetPathVisibility() => _pathVisibility;
+
+        public void SetPathVisibility(bool value)
+        {
+            _pathVisibility = value;
+            OnPathVisibilityChanged?.Invoke();
         }
     }
 }

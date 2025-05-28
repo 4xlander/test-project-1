@@ -58,6 +58,12 @@ namespace Game
                 data.State = SpaceResState.Target;
         }
 
+        public void FreeResource(string resId)
+        {
+            if (_dataMap.TryGetValue(resId, out var data))
+                data.State = SpaceResState.Idle;
+        }
+
         public SpaceResType GetResType(string resId)
         {
             return _dataMap[resId].Type;

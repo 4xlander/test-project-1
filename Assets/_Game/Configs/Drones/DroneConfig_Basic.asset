@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: DroneConfig_Basic
   m_EditorClassIdentifier: 
   _droneType: 0
-  _moveSpeedBase: 1
-  _gatherSpeedBase: 2
+  _moveSpeedBase: 4
+  _gatherSpeedBase: 6
   _prefab: {fileID: 581690577761382907, guid: f8ba6c5fed4935345a6cd45a91de1c97, type: 3}

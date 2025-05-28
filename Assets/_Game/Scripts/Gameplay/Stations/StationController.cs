@@ -40,6 +40,11 @@ namespace Game
                 var droneId = _droneFactory.CreateBasicDrone(_stationId, _view.DroneSpawnPoint);
                 _model.AddDrone(_stationId, droneId);
             }
+
+            while (drones.Count > maxDronesCount)
+            {
+                _drones.RemoveDrone(drones[drones.Count - 1]);
+            }
         }
     }
 }

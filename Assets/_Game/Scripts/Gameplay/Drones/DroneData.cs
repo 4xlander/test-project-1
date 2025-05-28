@@ -9,6 +9,8 @@ namespace Game
         public string TargetId;
         public string StationId;
 
+        public float Speed;
+        public bool PathVisibility;
         public Vector3 Position;
         public DroneState State;
         public List<CargoData> Cargo = new();

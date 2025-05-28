@@ -8,10 +8,11 @@ namespace Game
     public class DroneView : MonoBehaviour
     {
         [SerializeField] private NavMeshAgent _navAgent;
+        [SerializeField] private DronePathView _dronePathView;
 
         private Action _onDestination;
 
-        private void Update()
+        public void Tick()
         {
             var isMoving = _navAgent.velocity.magnitude > 0.2f;
 
@@ -28,6 +29,18 @@ namespace Game
                     OnDestinationReached();
                 }
             }
+
+            _dronePathView.Tick();
+        }
+
+        public void SetPathVisibility(bool visible)
+        {
+            _dronePathView.SetPathVisibility(visible);
+        }
+
+        public void SetSpeed(float value)
+        {
+            _navAgent.speed = value;
         }
 
         public void MoveTo(Vector3 targetPosition, Action onComplete)

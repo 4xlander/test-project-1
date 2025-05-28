@@ -35,6 +35,9 @@ namespace Game
             return id;
         }
 
+        public IReadOnlyCollection<string> Stations =>
+            _dataMap.Keys;
+
         public int GetMaxDronesCount(string stationId)
         {
             int result = 0;
@@ -42,6 +45,15 @@ namespace Game
                 result = data.MaxDronesCount;
 
             return result;
+        }
+
+        public void SetMaxDronesCount(string stationId, int value)
+        {
+            if (value < 1)
+                return;
+
+            if (_dataMap.TryGetValue(stationId, out var data))
+                data.MaxDronesCount = value;
         }
 
         public IReadOnlyList<string> GetDrones(string stationId)

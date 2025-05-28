@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace Game
@@ -9,8 +8,8 @@ namespace Game
         private const float WAIT_TIME = 2f;
         private const float TRANSFER_CARGO_TIME = 1f;
 
+        private DroneView _view;
         private readonly string _droneId;
-        private readonly DroneView _view;
         private readonly DronesModel _model;
         private readonly DroneConfig _config;
         private readonly SpaceResModel _spaceResModel;
@@ -34,12 +33,23 @@ namespace Game
             _stationsModel = stationsModel;
 
             _tickManager = tickManager;
-            _tickManager.Register(this);
+        }
+
+        public void Init()
+        {
+            _view.SetSpeed(_config.MoveSpeedBase);
+            _view.SetPathVisibility(_model.GetPathVisibility());
+
+            InitSubscribes();
         }
 
         public void Tick()
         {
+            if (_view == null)
+                return;
+
             ProceedState();
+            _view.Tick();
         }
 
         private void ProceedState()
@@ -99,7 +109,7 @@ namespace Game
 
             var stationId = _model.GetStationId(_droneId);
             var stationPos = _stationsModel.GetPosition(stationId);
-            _view.MoveTo(stationPos, () => _model.ChangeState(_droneId, DroneState.CargoTransfer));
+            _view?.MoveTo(stationPos, () => _model.ChangeState(_droneId, DroneState.CargoTransfer));
 
             _timer = TRANSFER_CARGO_TIME;
             _model.ChangeState(_droneId, DroneState.Move);
@@ -123,7 +133,7 @@ namespace Game
             _model.SetTargetResource(_droneId, _targetResId);
 
             var targetPos = _spaceResModel.GetPosition(_targetResId);
-            _view.MoveTo(targetPos, () => _model.ChangeState(_droneId, DroneState.Gather));
+            _view?.MoveTo(targetPos, () => _model.ChangeState(_droneId, DroneState.Gather));
 
             _model.ChangeState(_droneId, DroneState.Move);
         }
@@ -148,6 +158,52 @@ namespace Game
                     _targetResId = resId;
                 }
             }
+        }
+
+        private void Model_OnPathVisibilityChanged()
+        {
+            _view?.SetPathVisibility(_model.GetPathVisibility());
+        }
+
+        private void Model_OnSpeedChanged(string obj)
+        {
+            if (obj != _droneId)
+                return;
+
+            var speed = _model.GetSpeed(obj);
+            _view?.SetSpeed(_config.MoveSpeedBase * speed);
+        }
+
+        private void Model_OnDroneRemoved(string obj)
+        {
+            if (obj != _droneId)
+                return;
+
+            RemoveSubscribes();
+
+            if (!string.IsNullOrEmpty(_targetResId))
+                _spaceResModel.FreeResource(_targetResId);
+
+            _view?.Destroy();
+            _view = null;
+        }
+
+        private void InitSubscribes()
+        {
+            _model.OnSpeedChanged += Model_OnSpeedChanged;
+            _model.OnDroneRemoved += Model_OnDroneRemoved;
+            _model.OnPathVisibilityChanged += Model_OnPathVisibilityChanged;
+
+            _tickManager.Register(this);
+        }
+
+        private void RemoveSubscribes()
+        {
+            _model.OnSpeedChanged -= Model_OnSpeedChanged;
+            _model.OnDroneRemoved -= Model_OnDroneRemoved;
+            _model.OnPathVisibilityChanged -= Model_OnPathVisibilityChanged;
+
+            _tickManager.Unregister(this);
         }
     }
 }

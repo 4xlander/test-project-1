@@ -38,7 +38,7 @@ namespace Game
             var droneView = Object.Instantiate(config.Prefab, parent);
             var droneId = _dronesModel.AddDrone(stationId);
             new DroneController(
-                droneId, droneView, _dronesModel, config, _spaceResModel, _stationsModel, _tickManager);
+                droneId, droneView, _dronesModel, config, _spaceResModel, _stationsModel, _tickManager).Init();
 
             return droneId;
         }

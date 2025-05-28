@@ -4,6 +4,7 @@ namespace Game
 {
     public class SpaceResSpawner : ITickable
     {
+        private SpaceResSpawnerModel _model;
         private SpaceResSpawnerConfig _config;
         private SpaceResModel _spaceResModel;
         private TickManager _tickManager;
@@ -12,8 +13,9 @@ namespace Game
         private float _spawnTimer = 0;
 
         public SpaceResSpawner(
-            SpaceResSpawnerConfig config, SpaceResModel spaceResModel, TickManager tickManager)
+            SpaceResSpawnerModel model, SpaceResSpawnerConfig config, SpaceResModel spaceResModel, TickManager tickManager)
         {
+            _model = model;
             _config = config;
             _spaceResModel = spaceResModel;
 
@@ -24,6 +26,7 @@ namespace Game
         public void Init(Transform spawnPoint)
         {
             _spawnPoint = spawnPoint;
+            _model.SpawnInterval = _config.SpawnInterval;
         }
 
         public void Tick()
@@ -35,7 +38,7 @@ namespace Game
 
             if (_spawnTimer <= 0)
             {
-                _spawnTimer = _config.SpawnInterval;
+                _spawnTimer = _model.SpawnInterval;
                 SpawnRandomResource();
             }
         }
