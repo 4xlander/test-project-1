@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SpaceResConfig_Gas
   m_EditorClassIdentifier: 
   _resource: 1
-  _amount: 100
+  _amount: 25
   _prefab: {fileID: 5218810242424478840, guid: 92d7054b2bb30ee43865a06ec8402eda, type: 3}

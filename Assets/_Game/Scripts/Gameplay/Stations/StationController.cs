@@ -19,15 +19,12 @@ namespace Game
             _view = view;
             _drones = drones;
             _droneFactory = droneFactory;
-            _drones.OnDroneRemoved += Drones_OnDroneRemoved;
-
             _tickManager = tickManager;
-            _tickManager.Register(this);
         }
 
-        private void Drones_OnDroneRemoved(string obj)
+        public void Init()
         {
-            _model.RemoveDrone(_stationId, obj);
+            InitSubscribes();
         }
 
         public void Tick()
@@ -37,7 +34,9 @@ namespace Game
 
             if (drones.Count < maxDronesCount)
             {
-                var droneId = _droneFactory.CreateBasicDrone(_stationId, _view.DroneSpawnPoint);
+                var droneId = _droneFactory.CreateBasicDrone(
+                    _stationId, _view.DroneSpawnPoint, _view.FractionColor);
+
                 _model.AddDrone(_stationId, droneId);
             }
 
@@ -45,6 +44,30 @@ namespace Game
             {
                 _drones.RemoveDrone(drones[drones.Count - 1]);
             }
+        }
+
+        private void Drones_OnDroneRemoved(string obj)
+        {
+            _model.RemoveDrone(_stationId, obj);
+        }
+
+        private void Model_OnResAmountChanged(string obj)
+        {
+            _view.AnimateResourceReceived();
+        }
+
+        private void InitSubscribes()
+        {
+            _drones.OnDroneRemoved += Drones_OnDroneRemoved;
+            _model.OnResAmountChanged += Model_OnResAmountChanged;
+            _tickManager.Register(this);
+        }
+
+        private void RemoveSubscribes()
+        {
+            _drones.OnDroneRemoved -= Drones_OnDroneRemoved;
+            _model.OnResAmountChanged -= Model_OnResAmountChanged;
+            _tickManager.Unregister(this);
         }
     }
 }

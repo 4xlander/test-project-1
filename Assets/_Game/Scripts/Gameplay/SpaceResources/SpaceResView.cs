@@ -10,6 +10,7 @@ namespace Game
         public void UpdateAmount(float amount)
         {
             AmountText.text = amount.ToString();
+            AmountText.enabled = amount > 0;
         }
     }
 }

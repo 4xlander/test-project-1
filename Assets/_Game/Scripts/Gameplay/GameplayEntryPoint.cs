@@ -34,6 +34,7 @@ namespace Game
                 var stationId = stationsModel.AddStation(view.transform.position);
                 var controller = new StationController(
                     stationId, stationsModel, view, dronesModel, droneFactory, _tickManager);
+                controller.Init();
             }
 
             new GameplayUIController(

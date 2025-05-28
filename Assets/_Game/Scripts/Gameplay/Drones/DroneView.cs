@@ -9,6 +9,7 @@ namespace Game
     {
         [SerializeField] private NavMeshAgent _navAgent;
         [SerializeField] private DronePathView _dronePathView;
+        [SerializeField] private Renderer _fractionMarkRenderer;
 
         private Action _onDestination;
 
@@ -31,6 +32,12 @@ namespace Game
             }
 
             _dronePathView.Tick();
+        }
+
+        public void SetColor(Color color)
+        {
+            _fractionMarkRenderer.material.color = color;
+            _dronePathView.UpdatePathColor(color);
         }
 
         public void SetPathVisibility(bool visible)

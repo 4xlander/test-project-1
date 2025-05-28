@@ -30,12 +30,14 @@ namespace Game
         /// <param name="parent"></param>
         /// <returns> Drone Id </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public string CreateBasicDrone(string stationId, Transform parent)
+        public string CreateBasicDrone(string stationId, Transform parent, Color color)
         {
             if (!_droneConfigsMap.TryGetValue(DroneType.Basic, out var config))
                 throw new KeyNotFoundException($"{typeof(DroneFactory)}: Config with Key '{DroneType.Basic}' not found!");
 
             var droneView = Object.Instantiate(config.Prefab, parent);
+            droneView.SetColor(color);
+
             var droneId = _dronesModel.AddDrone(stationId);
             new DroneController(
                 droneId, droneView, _dronesModel, config, _spaceResModel, _stationsModel, _tickManager).Init();
