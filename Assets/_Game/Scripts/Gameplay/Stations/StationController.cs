@@ -51,9 +51,10 @@ namespace Game
             _model.RemoveDrone(_stationId, obj);
         }
 
-        private void Model_OnResAmountChanged(string obj)
+        private void Model_OnResAmountChanged(string stationId)
         {
-            _view.AnimateResourceReceived();
+            if (_stationId == stationId)
+                _view.AnimateResourceReceived();
         }
 
         private void InitSubscribes()

@@ -7,6 +7,7 @@ namespace Game
     {
         [SerializeField] private Transform _droneSpawnPoint;
         [Space]
+        [SerializeField] private Transform _stationVisual;
         [SerializeField] private Renderer _stationRenderer;
         [SerializeField] private Color _fractionColor = Color.white;
         [Space]
@@ -19,7 +20,7 @@ namespace Game
 
         private void Start()
         {
-            _defaultScale = _stationRenderer.transform.localScale;
+            _defaultScale = _stationVisual.localScale;
             _stationRenderer.material.color = _fractionColor;
         }
 
@@ -32,11 +33,11 @@ namespace Game
 
         private IEnumerator ScaleAnimation()
         {
-            _stationRenderer.transform.localScale *= _scaleAnimationValue;
+            _stationVisual.localScale *= _scaleAnimationValue;
 
             yield return new WaitForSeconds(_scaleAnimationDuration / 2);
 
-            _stationRenderer.transform.localScale = _defaultScale;
+            _stationVisual.localScale = _defaultScale;
         }
     }
 }
