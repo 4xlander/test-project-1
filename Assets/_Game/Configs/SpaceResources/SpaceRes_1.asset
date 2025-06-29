@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9cf19642be4d4da41a08e6bc236a4546, type: 3}
-  m_Name: SpaceResConfig_Gas
+  m_Name: SpaceRes_1
   m_EditorClassIdentifier: 
   _resource: 1
   _amount: 25
-  _prefab: {fileID: 5218810242424478840, guid: 92d7054b2bb30ee43865a06ec8402eda, type: 3}
+  _prefab: {fileID: 95683078005616576, guid: 248eefaa2ac13d545a1e7729618144f9, type: 3}
