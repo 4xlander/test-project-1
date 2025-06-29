@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4858818353427400791}
   - component: {fileID: 3876986247717515439}
   m_Layer: 0
-  m_Name: Engine Thruster Particle System
+  m_Name: EngineThruster
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
