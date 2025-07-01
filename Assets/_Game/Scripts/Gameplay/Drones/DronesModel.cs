@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Game
 {
@@ -8,6 +9,7 @@ namespace Game
     {
         public event Action<string> OnDroneRemoved;
         public event Action<string> OnSpeedChanged;
+        public event Action<string> OnTargetChanged;
         public event Action OnPathVisibilityChanged;
 
         private readonly Dictionary<string, DroneData> _dataMap;
@@ -66,6 +68,12 @@ namespace Game
                 return;
 
             data.TargetId = resId;
+            OnTargetChanged?.Invoke(droneId);
+        }
+
+        public string GetTargetResource(string droneId)
+        {
+            return _dataMap[droneId].TargetId;
         }
 
         public void AddCargo(string _dronId, SpaceResType resType, float amount)
@@ -120,6 +128,19 @@ namespace Game
         {
             _pathVisibility = value;
             OnPathVisibilityChanged?.Invoke();
+        }
+
+        public void SetPosition(string droneId, Vector3 position)
+        {
+            if (!_dataMap.TryGetValue(droneId, out var data))
+                return;
+
+            data.Position = position;
+        }
+
+        public Vector3 GetPosition(string droneId)
+        {
+            return _dataMap[droneId].Position;
         }
     }
 }

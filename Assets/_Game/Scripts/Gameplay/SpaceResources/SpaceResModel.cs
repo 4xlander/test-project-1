@@ -52,13 +52,13 @@ namespace Game
             return _dataMap[resId].State == SpaceResState.Idle;
         }
 
-        public void SetTarget(string resId)
+        public void Reserve(string resId)
         {
             if (_dataMap.TryGetValue(resId, out var data))
                 data.State = SpaceResState.Target;
         }
 
-        public void FreeResource(string resId)
+        public void Unreserve(string resId)
         {
             if (_dataMap.TryGetValue(resId, out var data))
                 data.State = SpaceResState.Idle;

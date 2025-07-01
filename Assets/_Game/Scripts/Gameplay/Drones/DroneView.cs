@@ -10,12 +10,15 @@ namespace Game
         [SerializeField] private NavMeshAgent _navAgent;
         [SerializeField] private DronePathView _dronePathView;
         [SerializeField] private Renderer _fractionMarkRenderer;
+        [SerializeField] private GameObject _thrusterEffect;
 
         private Action _onDestination;
 
         public void Tick()
         {
             var isMoving = _navAgent.velocity.magnitude > 0.2f;
+
+            _thrusterEffect.SetActive(isMoving);
 
             if (isMoving)
             {
@@ -56,6 +59,11 @@ namespace Game
             var offset = GetRandomOffset(_navAgent.transform.position, targetPosition, 0.4f, 60f);
             var position = targetPosition + offset;
             _navAgent.SetDestination(position);
+        }
+
+        public void SetAvoidancePriority(int value)
+        {
+            _navAgent.avoidancePriority = value;
         }
 
         private void OnDestinationReached()
