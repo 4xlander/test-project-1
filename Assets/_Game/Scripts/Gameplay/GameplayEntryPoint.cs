@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Game
@@ -36,6 +37,8 @@ namespace Game
                     stationId, stationsModel, view, dronesModel, droneFactory, _tickManager);
                 controller.Init();
             }
+
+            new DroneDispatcher(dronesModel, spaceResModel, _tickManager).Init();
 
             new GameplayUIController(
                 _uiService.GameplayUIView, stationsModel, dronesModel, spaceResSpawnModel).Init();

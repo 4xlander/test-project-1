@@ -34,12 +34,6 @@ namespace Game
             _drones.OnTargetChanged -= Drone_OnTargetChanged;
         }
 
-        public override void Update()
-        {
-            base.Update();
-            FindNearestFreeRes();
-        }
-
         private void Drone_OnTargetChanged(string obj)
         {
             if (obj != _droneId)
@@ -49,35 +43,6 @@ namespace Game
             if (string.IsNullOrEmpty(targetResId))
                 return;
 
-            _fsm.SetState<MoveToResourceState>();
-        }
-
-        private void FindNearestFreeRes()
-        {
-            var minDistance = float.MaxValue;
-            var targetResId = string.Empty;
-
-            foreach (var resId in _resources.Resources)
-            {
-                if (!_resources.IsFree(resId))
-                    continue;
-
-                var resPos = _resources.GetPosition(resId);
-                var dronePos = _view.transform.position;
-
-                var dist = Vector3.Distance(dronePos, resPos);
-                if (dist < minDistance)
-                {
-                    minDistance = dist;
-                    targetResId = resId;
-                }
-            }
-
-            if (string.IsNullOrEmpty(targetResId))
-                return;
-
-            _resources.Reserve(targetResId);
-            _drones.SetTargetResource(_droneId, targetResId);
             _fsm.SetState<MoveToResourceState>();
         }
     }

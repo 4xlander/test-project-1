@@ -23,7 +23,7 @@ namespace Game
         public override void Enter()
         {
             base.Enter();
-            _drones.ChangeState(_droneId, DroneState.Move);
+            _drones.ChangeState(_droneId, DroneState.MoveToResource);
             _targetResId = string.Empty;
             _view.SetAvoidancePriority(Random.Range(30, 60));
         }

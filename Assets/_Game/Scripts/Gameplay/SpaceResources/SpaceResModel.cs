@@ -6,7 +6,6 @@ namespace Game
 {
     public class SpaceResModel
     {
-        public event Action<string> OnStateChanged;
         public event Action<string> OnAmountChanged;
         public event Action<string> OnResRemoved;
 

@@ -14,7 +14,6 @@ namespace Game
             _view = view;
 
             _model.OnAmountChanged += Model_OnAmountChanged;
-            _model.OnStateChanged += Model_OnStateChanged;
             _model.OnResRemoved += Model_OnResRemoved;
         }
 
@@ -32,11 +31,6 @@ namespace Game
             _view.UpdateAmount(amount);
         }
 
-        private void Model_OnStateChanged(string obj)
-        {
-            throw new System.NotImplementedException();
-        }
-
         private void Model_OnResRemoved(string obj)
         {
             if (obj != _resId)
@@ -48,7 +42,6 @@ namespace Game
         private void Dispose()
         {
             _model.OnAmountChanged -= Model_OnAmountChanged;
-            _model.OnStateChanged -= Model_OnStateChanged;
             _model.OnResRemoved -= Model_OnResRemoved;
 
             _view.Destroy();

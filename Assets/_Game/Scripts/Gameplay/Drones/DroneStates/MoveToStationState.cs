@@ -21,7 +21,7 @@ namespace Game
         public override void Enter()
         {
             base.Enter();
-            _drones.ChangeState(_droneId, DroneState.Move);
+            _drones.ChangeState(_droneId, DroneState.MoveToStation);
 
             _view.SetAvoidancePriority(Random.Range(30, 60));
 

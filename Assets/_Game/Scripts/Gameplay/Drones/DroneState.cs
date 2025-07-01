@@ -4,8 +4,9 @@ namespace Game
     {
         Idle,
         Wait,
-        Move,
         Gather,
         CargoTransfer,
+        MoveToStation,
+        MoveToResource,
     }
 }
